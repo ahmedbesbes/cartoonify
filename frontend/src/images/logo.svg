@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?> <!-- Created with Vectornator for iOS (http://vectornator.io/) --><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" xmlns:vectornator="http://vectornator.io" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" viewBox="0 0 256.354 61.4435">
+<metadata>
+<vectornator:setting key="DimensionsVisible" value="1"/>
+<vectornator:setting key="SnapToGrid" value="0"/>
+<vectornator:setting key="SnapToPoints" value="0"/>
+<vectornator:setting key="GuidesVisible" value="1"/>
+<vectornator:setting key="RulersVisible" value="1"/>
+<vectornator:setting key="CMYKEnabledKey" value="0"/>
+<vectornator:setting key="SnapToEdges" value="0"/>
+<vectornator:setting key="DisplayWhiteBackground" value="1"/>
+<vectornator:setting key="SnapToGuides" value="1"/>
+<vectornator:setting key="GridSpacing" value="36"/>
+<vectornator:setting key="Units" value="Pixels"/>
+<vectornator:setting key="DynamicGuides" value="0"/>
+<vectornator:setting key="New" value="1"/>
+</metadata>
+<defs/>
+<g id="Text" vectornator:layerName="Text">
+<text x="0" font-family="SignPainter-HouseScriptSemibold" y="0" text-anchor="start" vectornator:text="Cartoonify" fill="#000000" font-size="56" vectornator:width="203.19" opacity="1" transform="matrix(1 0 0 1 4.92843 0.328592)">
+<tspan x="0" y="39" textLength="183.848">
+Cartoonify</tspan>
+</text>
+</g>
+<g id="logo" vectornator:layerName="logo">
+<path d="M235.681+7.08026L208.177+34.5849L202.279+53.116L220.81+47.2186L248.315+19.714C248.315+19.714+248.104+15.2901+244.104+11.2915C240.103+7.29082+235.681+7.08026+235.681+7.08026ZM236.471+10.5019C238.728+10.9314+240.525+11.8876+241.912+13.3107C243.298+14.7339+244.274+16.624+244.893+18.9244L241.077+22.7408L232.655+14.3183L235.681+11.2915L236.471+10.5019ZM210.5+36.6946C210.525+36.7009+213.032+37.3347+215.546+39.8489C218.284+42.3757+218.705+44.6935+218.705+44.6935L218.795+44.8004L211.323+47.2063L208.173+44.0561L210.5+36.6946Z" opacity="1" fill="#000000"/>
+</g>
+</svg>

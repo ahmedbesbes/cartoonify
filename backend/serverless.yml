@@ -1,0 +1,84 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: cartoonify
+
+provider:
+  name: aws
+  runtime: python3.7
+  profile: cartoonify
+  region: eu-west-3
+  timeout: 60
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:getObject
+      Resource: arn:aws:s3:::cartoongan/models/*
+    - Effect: Allow
+      Action:
+        - "lambda:InvokeFunction"
+      Resource: "*"
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    zip: true
+    slim: true
+    strip: false
+    noDeploy:
+      - docutils
+      - jmespath
+      - pip
+      - python-dateutil
+      - setuptools
+      - six
+      - tensorboard
+    useStaticCache: true
+    useDownloadCache: true
+    cacheLocation: "./cache"
+  warmup:
+    events:
+      - schedule: "rate(5 minutes)"
+    timeout: 50
+
+package:
+  individually: false
+  exclude:
+    - package.json
+    - package-log.json
+    - node_modules/**
+    - cache/**
+    - test/**
+    - __pycache__/**
+    - .pytest_cache/**
+    - model/pytorch_model.bin
+    - raw/**
+    - .vscode/**
+    - .ipynb_checkpoints/**
+
+functions:
+  transformImage:
+    handler: src/handler.lambda_handler
+    memorySize: 3008
+    timeout: 300
+    events:
+      - http:
+          path: transform
+          method: post
+          cors: true
+    warmup: true
+
+
+plugins:
+  - serverless-python-requirements
+  - serverless-plugin-warmup

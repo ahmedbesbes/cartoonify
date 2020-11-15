@@ -12,7 +12,7 @@ Here's what motivated me in building this app:
 
 - Use Netlify to deploy this React app. I saw demos of how easy this process was and I wanted to try it to convince myself
 
-### 0- Some prerequisites to build and deploy Cartoonify
+## 0- Some prerequisites to build and deploy Cartoonify
 
 If you want to run and deploy Cartoonify, here are some prerequisites first:
 
@@ -24,7 +24,7 @@ If you want to run and deploy Cartoonify, here are some prerequisites first:
 
 Good? you're now ready to go. Please follow these four steps:
 
-### 1- Test CartoonGAN locally
+## 1- Test CartoonGAN locally
 
 This is more of an exploratory step where you get to play with the pretrained models (**in inference only**) on some sample images.
 
@@ -55,9 +55,9 @@ _You can watch this section on Youtube_
 
 </p>
 
-### 2- Deploy CartoonGAN on a serverless API using AWS Lambda
+## 2- Deploy CartoonGAN on a serverless API using AWS Lambda
 
-#### Why a serverless architecture matters?
+### Why a serverless architecture matters?
 
 The goal of this section is to deploy the CartoonGAN model on a serverless architecture so that it can be requested through an API endpoint.
 
@@ -69,7 +69,7 @@ A serverless architecture has many benefits:
 
 2. Scalability: if a serverless application starts having a lot of requests at the same time, AWS will scale it by allocating more power to manage the load. If you had the manage the load by yourself, you would do this by manually allocating more machines and creating a load balancer.
 
-#### Cartoonify workflow
+### Cartoonify workflow
 
 Here's the architecture of the app:
 
@@ -86,7 +86,7 @@ Here's the architecture of the app:
   - The Lambda function starts running: it first fetches the pretrained models from S3 and then applies the style transformation on it
   - Once the Lambda function is done running, it sends the transformed image back to the client through API Gateway.
 
-#### Deploy using the Serverless framework
+### Deploy using the Serverless framework
 
 We are going to define and deploy this architecture by writing it as a Yaml file using the Serverless framework. Here are the steps to follow:
 
@@ -379,6 +379,6 @@ Once it's done you'll be prompted by a URL of the API. Go to jupyter notebook to
 
 _You can watch this section on Youtube_
 
-### 3- Build a React interface
+## 3- Build a React interface
 
-### 4- Deploy the React app on Netlify
+## 4- Deploy the React app on Netlify

@@ -127,6 +127,7 @@ npm install --save-dev serverless-plugin-warmup
 - Modify the serverless.yml file with the following sections:
 
   - The provider section where we setup the provider, the runtime and the permissions:
+    <br>
 
   ```yaml
   provider:
@@ -147,6 +148,7 @@ npm install --save-dev serverless-plugin-warmup
   ```
 
   - The custom section where we configure the plugins:
+    <br>
 
   ```yaml
   custom:
@@ -173,6 +175,7 @@ npm install --save-dev serverless-plugin-warmup
   ```
 
   - The package section where we exclude folders from production
+    <br>
 
   ```yaml
   package:
@@ -192,6 +195,7 @@ npm install --save-dev serverless-plugin-warmup
   ```
 
   - The functions section where we create the Lambda function and define the events that invoke it:
+    <br>
 
   ```yaml
   functions:
@@ -207,7 +211,8 @@ npm install --save-dev serverless-plugin-warmup
       warmup: true
   ```
 
-  - and finally the plugins sections:
+  - and finally the plugins section:
+    <br>
 
   ```yaml
   plugins:
@@ -228,6 +233,7 @@ Pillow==6.2.1
 - Modify handler.py
 
   - Define imports
+    <br>
 
   ```python
   try:
@@ -253,6 +259,7 @@ Pillow==6.2.1
   ```
 
   - Define two functions inside handler.py: **img_to_base64_str** to convert binary images to base64 format and **load_models** to load the four pretrained model inside a dictionary
+    <br>
 
   ```python
     def img_to_base64_str(img):
@@ -281,6 +288,7 @@ Pillow==6.2.1
   ```
 
   - Define the **lambda_handler** function:
+    <br>
 
   ```python
   def lambda_handler(event, context):

@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class Transformer(nn.Module):
     def __init__(self):
         super(Transformer, self).__init__()
@@ -15,11 +16,11 @@ class Transformer(nn.Module):
         self.in02_1 = InstanceNormalization(128)
         # relu
         self.conv03_1 = nn.Conv2d(128, 256, 3, 2, 1)
-        self.conv03_2 = nn.Conv2d(256, 256, 3, 1, 1)   
-        self.in03_1 = InstanceNormalization(256)    
+        self.conv03_2 = nn.Conv2d(256, 256, 3, 1, 1)
+        self.in03_1 = InstanceNormalization(256)
         # relu
 
-        ## res block 1
+        # res block 1
         self.refpad04_1 = nn.ReflectionPad2d(1)
         self.conv04_1 = nn.Conv2d(256, 256, 3)
         self.in04_1 = InstanceNormalization(256)
@@ -29,7 +30,7 @@ class Transformer(nn.Module):
         self.in04_2 = InstanceNormalization(256)
         # + input
 
-        ## res block 2
+        # res block 2
         self.refpad05_1 = nn.ReflectionPad2d(1)
         self.conv05_1 = nn.Conv2d(256, 256, 3)
         self.in05_1 = InstanceNormalization(256)
@@ -39,7 +40,7 @@ class Transformer(nn.Module):
         self.in05_2 = InstanceNormalization(256)
         # + input
 
-        ## res block 3
+        # res block 3
         self.refpad06_1 = nn.ReflectionPad2d(1)
         self.conv06_1 = nn.Conv2d(256, 256, 3)
         self.in06_1 = InstanceNormalization(256)
@@ -49,7 +50,7 @@ class Transformer(nn.Module):
         self.in06_2 = InstanceNormalization(256)
         # + input
 
-        ## res block 4
+        # res block 4
         self.refpad07_1 = nn.ReflectionPad2d(1)
         self.conv07_1 = nn.Conv2d(256, 256, 3)
         self.in07_1 = InstanceNormalization(256)
@@ -59,7 +60,7 @@ class Transformer(nn.Module):
         self.in07_2 = InstanceNormalization(256)
         # + input
 
-        ## res block 5
+        # res block 5
         self.refpad08_1 = nn.ReflectionPad2d(1)
         self.conv08_1 = nn.Conv2d(256, 256, 3)
         self.in08_1 = InstanceNormalization(256)
@@ -69,7 +70,7 @@ class Transformer(nn.Module):
         self.in08_2 = InstanceNormalization(256)
         # + input
 
-        ## res block 6
+        # res block 6
         self.refpad09_1 = nn.ReflectionPad2d(1)
         self.conv09_1 = nn.Conv2d(256, 256, 3)
         self.in09_1 = InstanceNormalization(256)
@@ -79,7 +80,7 @@ class Transformer(nn.Module):
         self.in09_2 = InstanceNormalization(256)
         # + input
 
-        ## res block 7
+        # res block 7
         self.refpad10_1 = nn.ReflectionPad2d(1)
         self.conv10_1 = nn.Conv2d(256, 256, 3)
         self.in10_1 = InstanceNormalization(256)
@@ -89,7 +90,7 @@ class Transformer(nn.Module):
         self.in10_2 = InstanceNormalization(256)
         # + input
 
-        ## res block 8
+        # res block 8
         self.refpad11_1 = nn.ReflectionPad2d(1)
         self.conv11_1 = nn.Conv2d(256, 256, 3)
         self.in11_1 = InstanceNormalization(256)
@@ -167,7 +168,8 @@ class InstanceNormalization(nn.Module):
         t = x.view(x.size(0), x.size(1), n)
         mean = torch.mean(t, 2).unsqueeze(2).unsqueeze(3).expand_as(x)
         # Calculate the biased var. torch.var returns unbiased var
-        var = torch.var(t, 2).unsqueeze(2).unsqueeze(3).expand_as(x) * ((n - 1) / float(n))
+        var = torch.var(t, 2).unsqueeze(2).unsqueeze(
+            3).expand_as(x) * ((n - 1) / float(n))
         scale_broadcast = self.scale.unsqueeze(1).unsqueeze(1).unsqueeze(0)
         scale_broadcast = scale_broadcast.expand_as(x)
         shift_broadcast = self.shift.unsqueeze(1).unsqueeze(1).unsqueeze(0)

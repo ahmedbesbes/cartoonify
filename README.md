@@ -67,7 +67,7 @@ _You can watch this section on Youtube to learn more about GANs and the CartoonG
 
 The goal of this section is to deploy the CartoonGAN model on a serverless architecture so that it can be requested through an API endpoint ... from the internet :computer:
 
-### Why does a serverless architecture matter?
+## Why does a serverless architecture matter?
 
 In a serverless architecture using Lambda functions for example, you don't have to provision servers yourself. Roughly speaking, you only write the code that'll be exectuded and list its dependencies and AWS will manage the servers for you automatically and take care of the infrastructure.
 
@@ -81,7 +81,7 @@ Of course, Serverless architectures cannot be a perfect fit for any usecase. In 
 
 Since I frequently build machine learning models and integrate them into web applications, I found that a serverless architecture was interesting in these specific usecases. Of course, here the models are used in **inference only** :warning:
 
-### Cartoonify workflow
+## Cartoonify workflow
 
 Here's the architecture of the app:
 
@@ -98,18 +98,18 @@ Here's the architecture of the app:
   - The Lambda function starts running: it first fetches the pretrained models from S3 and then applies the style transformation on it
   - Once the Lambda function is done running, it sends the transformed image back to the client through API Gateway.
 
-### Deploy using the Serverless framework
+## Deploy using the Serverless framework
 
 We are going to define and deploy this architecture by writing it as a Yaml file using the Serverless framework. Here are the steps to follow:
 
-- Install the serverless framework on your machine
+1.  Install the serverless framework on your machine
 
 ```bash
 npm install -g serverless
 ```
 
-- Create an IAM user on AWS with administrator access and name it **cartoonify**.
-  Then configure serverless with this user's credentials:
+2.  Create an IAM user on AWS with administrator access and name it **cartoonify**.
+    Then configure serverless with this user's credentials:
 
 ```bash
 serverless config credentials --provider aws \
@@ -118,121 +118,122 @@ serverless config credentials --provider aws \
                               --profile cartoonify
 ```
 
-- bootstrap a serverless project with a python template at the root of this project
+3.  bootstrap a serverless project with a python template at the root of this project
 
 ```bash
 serverless create --template aws-python --path backend
 ```
 
-- install two Serverless plugins:
+4.  install two Serverless plugins:
 
 ```bash
 sls plugin install -n serverless-python-requirements
 npm install --save-dev serverless-plugin-warmup
 ```
 
-- Create a folder called `network` inside `backend` and put the following two files in it:
+5.  Create a folder called `network` inside `backend` and put the following two files in it:
 
-  - Transformer.py: a script that holds the architecture of the generator model.
-  - A blank \_\_init\_\_.py
+    - Transformer.py: a script that holds the architecture of the generator model.
+    - A blank \_\_init\_\_.py
 
-- Modify the serverless.yml file with the following sections:
+6.  Modify the serverless.yml file with the following sections:
 
-  1. The provider section where we setup the provider, the runtime and the permissions:
-     <br>
+```yaml
+# The provider section where we setup the provider, the runtime and the permissions:
 
-  ```yaml
-  provider:
-    name: aws
-    runtime: python3.7
-    profile: cartoonify
-    region: eu-west-3
-    timeout: 60
-    iamRoleStatements:
-        - Effect: Allow
-        Action:
-            - s3:getObject
-        Resource: arn:aws:s3:::cartoongan/models/*
-        - Effect: Allow
-        Action:
-            - "lambda:InvokeFunction"
-        Resource: "*"
-  ```
+provider:
+  name: aws
+  runtime: python3.7
+  profile: cartoonify
+  region: eu-west-3
+  timeout: 60
+  iamRoleStatements:
+      - Effect: Allow
+      Action:
+          - s3:getObject
+      Resource: arn:aws:s3:::cartoongan/models/*
+      - Effect: Allow
+      Action:
+          - "lambda:InvokeFunction"
+      Resource: "*"
+```
 
-  - The custom section where we configure the plugins:
-    <br>
+---
 
-  ```yaml
-  custom:
-    pythonRequirements:
-    dockerizePip: true
-    zip: true
-    slim: true
-    strip: false
-    noDeploy:
-      - docutils
-      - jmespath
-      - pip
-      - python-dateutil
-      - setuptools
-      - six
-      - tensorboard
-    useStaticCache: true
-    useDownloadCache: true
-    cacheLocation: "./cache"
-    warmup:
+```yaml
+# The custom section where we configure the plugins:
+custom:
+  pythonRequirements:
+  dockerizePip: true
+  zip: true
+  slim: true
+  strip: false
+  noDeploy:
+    - docutils
+    - jmespath
+    - pip
+    - python-dateutil
+    - setuptools
+    - six
+    - tensorboard
+  useStaticCache: true
+  useDownloadCache: true
+  cacheLocation: "./cache"
+  warmup:
+  events:
+    - schedule: "rate(5 minutes)"
+  timeout: 50
+```
+
+---
+
+```yaml
+# The package section where we exclude folders from production
+package:
+  individually: false
+  exclude:
+    - package.json
+    - package-log.json
+    - node_modules/**
+    - cache/**
+    - test/**
+    - __pycache__/**
+    - .pytest_cache/**
+    - model/pytorch_model.bin
+    - raw/**
+    - .vscode/**
+    - .ipynb_checkpoints/**
+```
+
+---
+
+```yaml
+# The functions section where we create the Lambda function and define the events that invoke it:
+functions:
+  transformImage:
+    handler: src/handler.lambda_handler
+    memorySize: 3008
+    timeout: 300
     events:
-      - schedule: "rate(5 minutes)"
-    timeout: 50
-  ```
+      - http:
+          path: transform
+          method: post
+          cors: true
+    warmup: true
+```
 
-  - The package section where we exclude folders from production
-    <br>
+---
 
-  ```yaml
-  package:
-    individually: false
-    exclude:
-      - package.json
-      - package-log.json
-      - node_modules/**
-      - cache/**
-      - test/**
-      - __pycache__/**
-      - .pytest_cache/**
-      - model/pytorch_model.bin
-      - raw/**
-      - .vscode/**
-      - .ipynb_checkpoints/**
-  ```
+```yaml
+# and finally the plugins section:
+plugins:
+  - serverless-python-requirements
+  - serverless-plugin-warmup
+```
 
-  - The functions section where we create the Lambda function and define the events that invoke it:
-    <br>
+---
 
-  ```yaml
-  functions:
-    transformImage:
-      handler: src/handler.lambda_handler
-      memorySize: 3008
-      timeout: 300
-      events:
-        - http:
-            path: transform
-            method: post
-            cors: true
-      warmup: true
-  ```
-
-  - and finally the plugins section:
-    <br>
-
-  ```yaml
-  plugins:
-    - serverless-python-requirements
-    - serverless-plugin-warmup
-  ```
-
-- List the dependencies inside requirements.txt
+7. List the dependencies inside requirements.txt
 
 ```bash
 https://download.pytorch.org/whl/cpu/torch-1.1.0-cp37-cp37m-linux_x86_64.whl
@@ -240,159 +241,158 @@ https://download.pytorch.org/whl/cpu/torchvision-0.3.0-cp37-cp37m-linux_x86_64.w
 Pillow==6.2.1
 ```
 
-- Create an `src` folder inside `backend` and put handler.py in it to define the lambda function
+8. Create an `src` folder inside `backend` and put handler.py in it to define the lambda function. Then modify handler.py
 
-- Modify handler.py
+```python
+# Define imports
+try:
+    import unzip_requirements
+except ImportError:
+    pass
 
-  - Define imports
-    <br>
+import json
+from io import BytesIO
+import time
+import os
+import base64
 
-  ```python
-  try:
-      import unzip_requirements
-  except ImportError:
-      pass
+import boto3
+import numpy as np
+from PIL import Image
 
-  import json
-  from io import BytesIO
-  import time
-  import os
-  import base64
-
-  import boto3
-  import numpy as np
-  from PIL import Image
-
-  import torch
-  import torchvision.transforms as transforms
-  from torch.autograd import Variable
-  import torchvision.utils as vutils
-  from network.Transformer import Transformer
-  ```
-
-  - Define two functions inside handler.py: **img_to_base64_str** to convert binary images to base64 format and **load_models** to load the four pretrained model inside a dictionary and then keep them in memory
-    <br>
-
-  ```python
-    def img_to_base64_str(img):
-        buffered = BytesIO()
-        img.save(buffered, format="PNG")
-        buffered.seek(0)
-        img_byte = buffered.getvalue()
-        img_str = "data:image/png;base64," + base64.b64encode(img_byte).decode()
-        return img_str
-
-
-    def load_models(s3, bucket):
-        styles = ["Hosoda", "Hayao", "Shinkai", "Paprika"]
-        models = {}
-
-        for style in styles:
-            model = Transformer()
-            response = s3.get_object(
-                Bucket=bucket, Key=f"models/{style}_net_G_float.pth")
-            state = torch.load(BytesIO(response["Body"].read()))
-            model.load_state_dict(state)
-            model.eval()
-            models[style] = model
-
-        return models
-  ```
-
-  - Define the **lambda_handler** function:
-    <br>
-
-  ```python
-  def lambda_handler(event, context):
-    """
-    lambda handler to execute the image transformation
-    """
-    # warming up the lambda
-    if event.get("source") in ["aws.events", "serverless-plugin-warmup"]:
-        print('Lambda is warm!')
-        return {}
-
-    # extracting the image form the payload and converting it to PIL format
-    data = json.loads(event["body"])
-    print("data keys :", data.keys())
-    image = data["image"]
-    image = image[image.find(",")+1:]
-    dec = base64.b64decode(image + "===")
-    image = Image.open(BytesIO(dec))
-    image = image.convert("RGB")
-
-    # loading the model with the selected style based on the model_id payload
-    model_id = int(data["model_id"])
-    style = mapping_id_to_style[model_id]
-    model = models[style]
-
-    # resize the image based on the load_size payload
-    load_size = int(data["load_size"])
-
-    h = image.size[0]
-    w = image.size[1]
-    ratio = h * 1.0 / w
-    if ratio > 1:
-        h = load_size
-        w = int(h*1.0 / ratio)
-    else:
-        w = load_size
-        h = int(w * ratio)
-
-    image = image.resize((h, w), Image.BICUBIC)
-    image = np.asarray(image)
-
-    # convert PIL image from  RGB to BGR
-    image = image[:, :, [2, 1, 0]]
-    image = transforms.ToTensor()(image).unsqueeze(0)
-
-    # transform values to (-1, 1)
-    image = -1 + 2 * image
-    if gpu > -1:
-        image = Variable(image, volatile=True).cuda()
-    else:
-        image = image.float()
-
-    # style transformation
-    with torch.no_grad():
-        output_image = model(image)
-        output_image = output_image[0]
-
-    # convert PIL image from BGR back to RGB
-    output_image = output_image[[2, 1, 0], :, :]
-
-    # transform values back to (0, 1)
-    output_image = output_image.data.cpu().float() * 0.5 + 0.5
-
-    # convert the transformed tensor to a PIL image
-    output_image = output_image.numpy()
-    output_image = np.uint8(output_image.transpose(1, 2, 0) * 255)
-    output_image = Image.fromarray(output_image)
-
-    # convert the PIL image to base64
-    result = {
-        "output": img_to_base64_str(output_image)
-    }
-
-    # send the result back to the client inside the body field
-    return {
-        "statusCode": 200,
-        "body": json.dumps(result),
-        "headers": {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        }
-    }
-  ```
-
-- Start docker before deploying
-
-- Deploy :rocket:
-
-```bash
-cd backend/
-sls deploy
+import torch
+import torchvision.transforms as transforms
+from torch.autograd import Variable
+import torchvision.utils as vutils
+from network.Transformer import Transformer
 ```
+
+---
+
+```python
+# Define two functions inside handler.py: img_to_base64_str to
+# convert binary images to base64 format and **load_models** to
+# load the four pretrained model inside a dictionary and then
+# keep them in memory
+
+def img_to_base64_str(img):
+    buffered = BytesIO()
+    img.save(buffered, format="PNG")
+    buffered.seek(0)
+    img_byte = buffered.getvalue()
+    img_str = "data:image/png;base64," + base64.b64encode(img_byte).decode()
+    return img_str
+
+
+def load_models(s3, bucket):
+    styles = ["Hosoda", "Hayao", "Shinkai", "Paprika"]
+    models = {}
+
+    for style in styles:
+        model = Transformer()
+        response = s3.get_object(
+            Bucket=bucket, Key=f"models/{style}_net_G_float.pth")
+        state = torch.load(BytesIO(response["Body"].read()))
+        model.load_state_dict(state)
+        model.eval()
+        models[style] = model
+
+    return models
+```
+
+---
+
+```python
+def lambda_handler(event, context):
+  """
+  lambda handler to execute the image transformation
+  """
+  # warming up the lambda
+  if event.get("source") in ["aws.events", "serverless-plugin-warmup"]:
+      print('Lambda is warm!')
+      return {}
+
+  # extracting the image form the payload and converting it to PIL format
+  data = json.loads(event["body"])
+  print("data keys :", data.keys())
+  image = data["image"]
+  image = image[image.find(",")+1:]
+  dec = base64.b64decode(image + "===")
+  image = Image.open(BytesIO(dec))
+  image = image.convert("RGB")
+
+  # loading the model with the selected style based on the model_id payload
+  model_id = int(data["model_id"])
+  style = mapping_id_to_style[model_id]
+  model = models[style]
+
+  # resize the image based on the load_size payload
+  load_size = int(data["load_size"])
+
+  h = image.size[0]
+  w = image.size[1]
+  ratio = h * 1.0 / w
+  if ratio > 1:
+      h = load_size
+      w = int(h*1.0 / ratio)
+  else:
+      w = load_size
+      h = int(w * ratio)
+
+  image = image.resize((h, w), Image.BICUBIC)
+  image = np.asarray(image)
+
+  # convert PIL image from  RGB to BGR
+  image = image[:, :, [2, 1, 0]]
+  image = transforms.ToTensor()(image).unsqueeze(0)
+
+  # transform values to (-1, 1)
+  image = -1 + 2 * image
+  if gpu > -1:
+      image = Variable(image, volatile=True).cuda()
+  else:
+      image = image.float()
+
+  # style transformation
+  with torch.no_grad():
+      output_image = model(image)
+      output_image = output_image[0]
+
+  # convert PIL image from BGR back to RGB
+  output_image = output_image[[2, 1, 0], :, :]
+
+  # transform values back to (0, 1)
+  output_image = output_image.data.cpu().float() * 0.5 + 0.5
+
+  # convert the transformed tensor to a PIL image
+  output_image = output_image.numpy()
+  output_image = np.uint8(output_image.transpose(1, 2, 0) * 255)
+  output_image = Image.fromarray(output_image)
+
+  # convert the PIL image to base64
+  result = {
+      "output": img_to_base64_str(output_image)
+  }
+
+  # send the result back to the client inside the body field
+  return {
+      "statusCode": 200,
+      "body": json.dumps(result),
+      "headers": {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+      }
+  }
+```
+
+9. Start docker
+
+10. Deploy :rocket:
+
+    ```bash
+    cd backend/
+    sls deploy
+    ```
 
 Deployment make take up to 5 - 8 minutes, so go grab a :coffee:.
 
@@ -419,7 +419,7 @@ yarn start
 
 This will start it at: http://localhost:3000
 
-- To buid the app before deploying it to Netlify
+- To build the app before deploying it to Netlify
 
 ```bash
 yarn build

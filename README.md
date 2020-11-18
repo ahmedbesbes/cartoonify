@@ -12,6 +12,8 @@ Here's what motivated me in building this app:
 
 - Use Netlify to deploy this React app. I saw demos of how easy this process was and I wanted to try it to convince myself
 
+[![](https://res.cloudinary.com/marcomontalbano/image/upload/v1605735276/video_to_markdown/images/youtube--U3UjaRVRtWQ-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/U3UjaRVRtWQ)
+
 ## 0- Some prerequisites to build and deploy Cartoonify
 
 If you want to run and deploy Cartoonify, here are some prerequisites first:
@@ -381,12 +383,37 @@ sls deploy
 
 Deployment make take up to 5 - 8 minutes, so go grab a :coffee:.
 
-Once it's done you'll be prompted by a URL of the API. Go to jupyter notebook to test it:
+Once the lambda function deployed, **you'll be prompted a URL of the API**. Go to jupyter notebook to test it:
 
 ![](./images/demo_api.png)
 
-_You can watch this section on Youtube_
+_You can watch this section on Youtube to get every piece of detail_
+
+[![](https://res.cloudinary.com/marcomontalbano/image/upload/v1605734471/video_to_markdown/images/youtube--palz3TLB6TE-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/palz3TLB6TE)
 
 ## 3- Build a React interface
+
+- Before running this app and building it you'll have to specify the API url of the model you just deployed.
+  Go inside `fontend/src/api.js` and change the value of **baseUrl**
+
+- To run the React app locally:
+
+```bash
+cd frontend/
+yarn install
+yarn start
+```
+
+This will start it at: http://localhost:3000
+
+- To buid the app before deploying it to Netlify
+
+```bash
+yarn build
+```
+
+This will create a `public/` folder that contains a build of the application to be served on Netlify.
+
+_You can watch this section on Youtube to understand how the code is structured._
 
 ## 4- Deploy the React app on Netlify

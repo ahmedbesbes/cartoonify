@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const baseUrl =
-  "https://tbuxfdm545.execute-api.eu-west-3.amazonaws.com/dev/transform";
+const baseUrl = "this-won't word unless you put your api URL";
 
 function transform(data) {
   return axios.post(baseUrl, data);

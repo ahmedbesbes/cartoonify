@@ -4,13 +4,15 @@ This repo contains all the code needed to run, build and deploy Cartoonify: a to
 
 Here's what motivated me in building this app:
 
-- Give GANs a try. I've been fascinated by these models lately. Trying CartoonGAN to turn your face into a cartoon seemed like real fun
+- Give GANs a try. I've been fascinated by these models lately. Trying the CartoonGAN model to turn your face into a cartoon seemed like real fun
 
 - Learn about deploying an application on a serverless architecture using different services of AWS (Lambda, API Gateway, S3, etc.)
 
-- Practice my React skills. I was so damn bored of Plotly, Dash and Streamlit. I wanted, for once, to build something custom
+- Practice my React skills. I was so damn bored of Plotly, Dash and Streamlit. I wanted, for once, to build something custom and less mainstream
 
 - Use Netlify to deploy this React app. I saw demos of how easy this process was and I wanted to try it to convince myself
+
+Here's a trailer of the project 🎥
 
 [![](https://res.cloudinary.com/marcomontalbano/image/upload/v1605735276/video_to_markdown/images/youtube--U3UjaRVRtWQ-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/U3UjaRVRtWQ)
 
@@ -18,17 +20,21 @@ Here's what motivated me in building this app:
 
 If you want to run and deploy Cartoonify, here are some prerequisites first:
 
-- An AWS account (don't worry, deploying this app will cost you merely **anything**)
+- An AWS account (don't worry, deploying this app will cost you almost **nothing**)
 - A free acount on Netlify
 - Docker installed on your machine
 - node and npm (preferably the latest versions) installed on your machine
 - torch and torchvision to test CartoonGAN locally (optional)
 
-Good? you're now ready to go. Please follow these four steps:
+All set? you're now ready to go.
+
+Please follow these four steps:
 
 # 1- Test CartoonGAN locally
 
-This is more of an exploratory step where you get to play with the pretrained models (**in inference only**) on some sample images.
+Some parts of the CartoonGan code as well as the pretrained models are borrowed from this [repo](https://github.com/Yijunmaverick/CartoonGAN-Test-Pytorch-Torch). A shout out to them for the great work!
+
+This is more of an exploratory step where you get to play with the pretrained models and try them (**so inference only**) on some sample images.
 
 If you're interested in the training procedure, have a look at the CartoonGAN [paper](https://openaccess.thecvf.com/content_cvpr_2018/papers/Chen_CartoonGAN_Generative_Adversarial_CVPR_2018_paper.pdf)
 
@@ -49,7 +55,7 @@ jupyter notebook
 
 ![](./images/demo_cartoongan.png)
 
-_You can watch this section on Youtube_
+_You can watch this section on Youtube to learn more about GANs and the CartoonGAN model_
 
 <p align="center">
 
@@ -59,17 +65,21 @@ _You can watch this section on Youtube_
 
 # 2- Deploy CartoonGAN on a serverless API using AWS Lambda
 
-### Why a serverless architecture matters?
+The goal of this section is to deploy the CartoonGAN model on a serverless architecture so that it can be requested through an API endpoint ... from the internet :computer:
 
-The goal of this section is to deploy the CartoonGAN model on a serverless architecture so that it can be requested through an API endpoint.
+### Why does a serverless architecture matter?
 
-In a serverless architecture using Lambda, you don't have to provision servers yourself. Roughly speaking, you only write the code that'll be exectuded and list its dependencies and AWS will manage the servers for you automatically.
+In a serverless architecture using Lambda functions for example, you don't have to provision servers yourself. Roughly speaking, you only write the code that'll be exectuded and list its dependencies and AWS will manage the servers for you automatically and take care of the infrastructure.
 
-A serverless architecture has many benefits:
+This has a lot of benefits:
 
 1. Cost efficiency: you don't have to pay for a serverless architecture when you don't use it. On the opposite, when you have an EC2 machine running and not processing any request, you still pay for it.
 
-2. Scalability: if a serverless application starts having a lot of requests at the same time, AWS will scale it by allocating more power to manage the load. If you had the manage the load by yourself, you would do this by manually allocating more machines and creating a load balancer.
+2. Scalability: if a serverless application starts having a lot of requests at the same time, AWS will scale it by allocating more power to manage the load. If you had the manage the load by yourself using EC2 instances, you would do this by manually allocating more machines and creating a load balancer.
+
+Of course, Serverless architectures cannot be a perfect fit for any usecase. In some situations they are not practical at all (need for real-time or quick responses, use of WebSocket, heavy processing, etc.).
+
+Since I frequently build machine learning models and integrate them into web applications, I found that a serverless architecture was interesting in these specific usecases. Of course, here the models are used in **inference only** :warning:
 
 ### Cartoonify workflow
 
@@ -123,13 +133,13 @@ npm install --save-dev serverless-plugin-warmup
 
 - Create a folder called `network` inside `backend` and put the following two files in it:
 
-  - Transformer.py
+  - Transformer.py: a script that holds the architecture of the generator model.
   - A blank \_\_init\_\_.py
 
 - Modify the serverless.yml file with the following sections:
 
-  - The provider section where we setup the provider, the runtime and the permissions:
-    <br>
+  1. The provider section where we setup the provider, the runtime and the permissions:
+     <br>
 
   ```yaml
   provider:
@@ -260,7 +270,7 @@ Pillow==6.2.1
   from network.Transformer import Transformer
   ```
 
-  - Define two functions inside handler.py: **img_to_base64_str** to convert binary images to base64 format and **load_models** to load the four pretrained model inside a dictionary
+  - Define two functions inside handler.py: **img_to_base64_str** to convert binary images to base64 format and **load_models** to load the four pretrained model inside a dictionary and then keep them in memory
     <br>
 
   ```python
@@ -302,6 +312,7 @@ Pillow==6.2.1
         print('Lambda is warm!')
         return {}
 
+    # extracting the image form the payload and converting it to PIL format
     data = json.loads(event["body"])
     print("data keys :", data.keys())
     image = data["image"]
@@ -310,14 +321,13 @@ Pillow==6.2.1
     image = Image.open(BytesIO(dec))
     image = image.convert("RGB")
 
-    # load the model with the selected style
-
+    # loading the model with the selected style based on the model_id payload
     model_id = int(data["model_id"])
-    load_size = int(data["load_size"])
     style = mapping_id_to_style[model_id]
     model = models[style]
 
-    # resize the image
+    # resize the image based on the load_size payload
+    load_size = int(data["load_size"])
 
     h = image.size[0]
     w = image.size[1]
@@ -332,36 +342,39 @@ Pillow==6.2.1
     image = image.resize((h, w), Image.BICUBIC)
     image = np.asarray(image)
 
-    # RGB -> BGR
+    # convert PIL image from  RGB to BGR
     image = image[:, :, [2, 1, 0]]
     image = transforms.ToTensor()(image).unsqueeze(0)
 
-    # preprocess, (-1, 1)
+    # transform values to (-1, 1)
     image = -1 + 2 * image
     if gpu > -1:
         image = Variable(image, volatile=True).cuda()
     else:
-        image = image.float()  # Variable(input_image).float()
+        image = image.float()
 
+    # style transformation
     with torch.no_grad():
         output_image = model(image)
         output_image = output_image[0]
 
-    # BGR -> RGB
+    # convert PIL image from BGR back to RGB
     output_image = output_image[[2, 1, 0], :, :]
-    # deprocess, (0, 1)
+
+    # transform values back to (0, 1)
     output_image = output_image.data.cpu().float() * 0.5 + 0.5
+
+    # convert the transformed tensor to a PIL image
     output_image = output_image.numpy()
-
     output_image = np.uint8(output_image.transpose(1, 2, 0) * 255)
-
     output_image = Image.fromarray(output_image)
 
-    #
+    # convert the PIL image to base64
     result = {
         "output": img_to_base64_str(output_image)
     }
 
+    # send the result back to the client inside the body field
     return {
         "statusCode": 200,
         "body": json.dumps(result),
@@ -387,13 +400,13 @@ Once the lambda function deployed, **you'll be prompted a URL of the API**. Go t
 
 ![](./images/demo_api.png)
 
-_You can watch this section on Youtube to get every piece of detail_
+_You can watch this section on Youtube to get every detail of it._
 
 [![](https://res.cloudinary.com/marcomontalbano/image/upload/v1605734471/video_to_markdown/images/youtube--palz3TLB6TE-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/palz3TLB6TE)
 
 # 3- Build a React interface
 
-- Before running this app and building it you'll have to specify the API url of the model you just deployed.
+- Before running the React app and building it, you'll have to specify the API url of the model you just deployed.
   Go inside `fontend/src/api.js` and change the value of **baseUrl**
 
 - To run the React app locally:
@@ -412,8 +425,37 @@ This will start it at: http://localhost:3000
 yarn build
 ```
 
-This will create a `public/` folder that contains a build of the application to be served on Netlify.
+This will create a `build/` folder that contains a build of the application to be served on Netlify.
 
 _You can watch this section on Youtube to understand how the code is structured._
 
 # 4- Deploy the React app on Netlify
+
+- To be able to deploy on Netlify you'll need an account. It's free, head over this [link](https://app.netlify.com/) to sign up.
+
+- Then you'll need to install **netlify-cli**
+
+```bash
+npm install netlify-cli -g
+```
+
+- Authenticate the Netlify client with your account
+
+```bash
+netlify login
+```
+
+- Deploy :rocket:
+
+```bash
+cd app/
+netlify deploy
+```
+
+_You can watch this section on Youtube to understand how easy the deployment on Netlify can be._
+
+# 5- Want to contribute ? :grin:
+
+If you've made this far, I sincerely thank you for your time!
+
+If you liked this project and want to improve it, be my guest: I'm open to pull requests.

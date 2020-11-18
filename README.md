@@ -1,4 +1,4 @@
-## Build and Deploy a Serverless Machine Learning App
+# Build and Deploy a Serverless Machine Learning App
 
 This repo contains all the code needed to run, build and deploy Cartoonify: a toy app I made to turn your pictures into cartoons.
 
@@ -14,7 +14,7 @@ Here's what motivated me in building this app:
 
 [![](https://res.cloudinary.com/marcomontalbano/image/upload/v1605735276/video_to_markdown/images/youtube--U3UjaRVRtWQ-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/U3UjaRVRtWQ)
 
-## 0- Some prerequisites to build and deploy Cartoonify
+# 0- Some prerequisites to build and deploy Cartoonify
 
 If you want to run and deploy Cartoonify, here are some prerequisites first:
 
@@ -26,7 +26,7 @@ If you want to run and deploy Cartoonify, here are some prerequisites first:
 
 Good? you're now ready to go. Please follow these four steps:
 
-## 1- Test CartoonGAN locally
+# 1- Test CartoonGAN locally
 
 This is more of an exploratory step where you get to play with the pretrained models (**in inference only**) on some sample images.
 
@@ -57,7 +57,7 @@ _You can watch this section on Youtube_
 
 </p>
 
-## 2- Deploy CartoonGAN on a serverless API using AWS Lambda
+# 2- Deploy CartoonGAN on a serverless API using AWS Lambda
 
 ### Why a serverless architecture matters?
 
@@ -391,7 +391,7 @@ _You can watch this section on Youtube to get every piece of detail_
 
 [![](https://res.cloudinary.com/marcomontalbano/image/upload/v1605734471/video_to_markdown/images/youtube--palz3TLB6TE-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/palz3TLB6TE)
 
-## 3- Build a React interface
+# 3- Build a React interface
 
 - Before running this app and building it you'll have to specify the API url of the model you just deployed.
   Go inside `fontend/src/api.js` and change the value of **baseUrl**
@@ -416,4 +416,4 @@ This will create a `public/` folder that contains a build of the application to 
 
 _You can watch this section on Youtube to understand how the code is structured._
 
-## 4- Deploy the React app on Netlify
+# 4- Deploy the React app on Netlify

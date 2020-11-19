@@ -1,8 +1,11 @@
-# Build and Deploy a Serverless Machine Learning App
+# Build and Deploy Cartoonify: a Serverless Machine Learning App
 
 This repo contains all the code needed to run, build and deploy Cartoonify: a toy app I made to turn your pictures into cartoons.
 
-Here's what motivated me in building this app:
+<p align="center">
+  <img src="./images/demo_cartoonify.gif" width="40%">
+</p>
+Here's what motivated me in starting this project:
 
 - Give GANs a try. I've been fascinated by these models lately. Trying the CartoonGAN model to turn your face into a cartoon seemed like real fun
 
@@ -12,11 +15,11 @@ Here's what motivated me in building this app:
 
 - Use Netlify to deploy this React app. I saw demos of how easy this process was and I wanted to try it to convince myself
 
-Here's a trailer of the project 🎥
+If you're interested in this project, here's a short introduction 🎥
 
 [![](https://res.cloudinary.com/marcomontalbano/image/upload/v1605735276/video_to_markdown/images/youtube--U3UjaRVRtWQ-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/U3UjaRVRtWQ)
 
-# 0- Some prerequisites to build and deploy Cartoonify
+# 0- Some prerequisites to build and deploy Cartoonify 🛠
 
 If you want to run and deploy Cartoonify, here are some prerequisites first:
 

@@ -1,11 +1,14 @@
 # Build and Deploy Cartoonify: a Serverless Machine Learning App
 
-This repo contains all the code needed to run, build and deploy Cartoonify: a toy app I made to turn your pictures into cartoons.
+<a href="https://www.buymeacoffee.com/ahmedbesbes" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
+This repo contains all the code needed to run, build and deploy Cartoonify: a toy app I made from scratch to turn your pictures into cartoons.
 
 <p align="center">
   <img src="./images/demo_cartoonify.gif" width="40%">
 </p>
-Here's what motivated me in starting this project:
+
+**Here's what motivated me in starting this project:**
 
 - Give GANs a try. I've been fascinated by these models lately. Trying the CartoonGAN model to turn your face into a cartoon seemed like real fun
 

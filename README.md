@@ -441,6 +441,8 @@ This will create a `build/` folder that contains a build of the application to b
 
 _You can watch this section on Youtube to understand how the code is structured._
 
+[![](https://res.cloudinary.com/marcomontalbano/image/upload/v1605870233/video_to_markdown/images/youtube--APiwsholTMQ-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/APiwsholTMQ)
+
 # 4. Deploy the React app on Netlify
 
 - To be able to deploy on Netlify you'll need an account. It's free, head over this [link](https://app.netlify.com/) to sign up.
@@ -465,6 +467,8 @@ netlify deploy
 ```
 
 _You can watch this section on Youtube to understand how easy the deployment on Netlify can be._
+
+[![](https://res.cloudinary.com/marcomontalbano/image/upload/v1605870264/video_to_markdown/images/youtube--kk_5BAVQVfM-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/kk_5BAVQVfM)
 
 # 5. Want to contribute ? :grin:
 

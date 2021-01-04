@@ -44,6 +44,7 @@ def transform(models, style, input, load_size=450, gpu=-1):
         input_image = Variable(input_image).float()
 
     t0 = time.time()
+    print("input shape", input_image.shape)
     with torch.no_grad():
         output_image = model(input_image)[0]
     print(f"inference time took {time.time() - t0} s")

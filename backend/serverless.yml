@@ -78,7 +78,6 @@ functions:
           cors: true
     warmup: true
 
-
 plugins:
   - serverless-python-requirements
   - serverless-plugin-warmup

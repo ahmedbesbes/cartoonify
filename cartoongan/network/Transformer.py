@@ -146,7 +146,7 @@ class Transformer(nn.Module):
 
         y = F.relu(self.in12_1(self.deconv01_2(self.deconv01_1(y))))
         y = F.relu(self.in13_1(self.deconv02_2(self.deconv02_1(y))))
-        y = F.tanh(self.deconv03_1(self.refpad12_1(y)))
+        y = torch.tanh(self.deconv03_1(self.refpad12_1(y)))
 
         return y
 
@@ -168,8 +168,10 @@ class InstanceNormalization(nn.Module):
         t = x.view(x.size(0), x.size(1), n)
         mean = torch.mean(t, 2).unsqueeze(2).unsqueeze(3).expand_as(x)
         # Calculate the biased var. torch.var returns unbiased var
-        var = torch.var(t, 2).unsqueeze(2).unsqueeze(
-            3).expand_as(x) * ((n - 1) / float(n))
+        var = torch.std(t, 2) ** 2
+        var = var.unsqueeze(2).unsqueeze(3).expand_as(x) * (
+            (n - 1) / torch.FloatTensor([n])
+        )
         scale_broadcast = self.scale.unsqueeze(1).unsqueeze(1).unsqueeze(0)
         scale_broadcast = scale_broadcast.expand_as(x)
         shift_broadcast = self.shift.unsqueeze(1).unsqueeze(1).unsqueeze(0)

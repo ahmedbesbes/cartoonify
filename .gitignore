@@ -1,4 +1,11 @@
 .ipynb_checkpoints
 __pycache__/
 
-cartoongan/pretrained_models
+node_modules
+
+.serverless
+cache
+.requirements.zip
+
+*.onnx
+*.pth

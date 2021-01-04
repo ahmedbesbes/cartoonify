@@ -1,0 +1,11 @@
+{
+  "name": "cartoonify",
+  "description": "",
+  "version": "0.1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "serverless-offline": "^6.8.0",
+    "serverless-plugin-warmup": "^4.9.0",
+    "serverless-python-requirements": "^5.1.0"
+  }
+}

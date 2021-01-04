@@ -36,8 +36,7 @@ def load_models(s3, bucket):
 
     for style in styles:
         model = Transformer()
-        response = s3.get_object(
-            Bucket=bucket, Key=f"models/{style}_net_G_float.pth")
+        response = s3.get_object(Bucket=bucket, Key=f"models/{style}_net_G_float.pth")
         state = torch.load(BytesIO(response["Body"].read()))
         model.load_state_dict(state)
         model.eval()
@@ -51,12 +50,7 @@ gpu = -1
 s3 = boto3.client("s3")
 bucket = "cartoongan"
 
-mapping_id_to_style = {
-    0: "Hosoda",
-    1: "Hayao",
-    2: "Shinkai",
-    3: "Paprika"
-}
+mapping_id_to_style = {0: "Hosoda", 1: "Hayao", 2: "Shinkai", 3: "Paprika"}
 
 models = load_models(s3, bucket)
 print(f"models loaded ...")
@@ -68,13 +62,13 @@ def lambda_handler(event, context):
     """
     # warming up the lambda
     if event.get("source") in ["aws.events", "serverless-plugin-warmup"]:
-        print('Lambda is warm!')
+        print("Lambda is warm!")
         return {}
 
     data = json.loads(event["body"])
     print("data keys :", data.keys())
     image = data["image"]
-    image = image[image.find(",")+1:]
+    image = image[image.find(",") + 1 :]
     dec = base64.b64decode(image + "===")
     image = Image.open(BytesIO(dec))
     image = image.convert("RGB")
@@ -93,7 +87,7 @@ def lambda_handler(event, context):
     ratio = h * 1.0 / w
     if ratio > 1:
         h = load_size
-        w = int(h*1.0 / ratio)
+        w = int(h * 1.0 / ratio)
     else:
         w = load_size
         h = int(w * ratio)
@@ -127,15 +121,13 @@ def lambda_handler(event, context):
     output_image = Image.fromarray(output_image)
 
     #
-    result = {
-        "output": img_to_base64_str(output_image)
-    }
+    result = {"output": img_to_base64_str(output_image)}
 
     return {
         "statusCode": 200,
         "body": json.dumps(result),
         "headers": {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        }
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+        },
     }

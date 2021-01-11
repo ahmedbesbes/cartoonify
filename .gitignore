@@ -6,6 +6,7 @@ node_modules
 .serverless
 cache
 .requirements.zip
+.DS_Store
 
 *.onnx
 *.pth

@@ -10,3 +10,4 @@ cache
 
 *.onnx
 *.pth
+.vscode

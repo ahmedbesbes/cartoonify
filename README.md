@@ -1,4 +1,4 @@
-# Build and Deploy Cartoonify: a Serverless Machine Learning Application
+# Build and Deploy Cartoonify: a Serverless Machine Learning App
 
 <a href="https://www.buymeacoffee.com/ahmedbesbes" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
@@ -134,6 +134,16 @@ serverless config credentials --provider aws \
 
 ```bash
 serverless create --template aws-python --path backend
+```
+
+From now on, you can either follow the steps from 4 to 10 to understand what happens, or run the code you just cloned to deploy the app.
+
+_If you're in hurry, just run these two commands:_
+
+```bash
+cd backend/
+npm install
+sls deploy
 ```
 
 4.  install two Serverless plugins:

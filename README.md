@@ -34,6 +34,12 @@ If you want to run and deploy Cartoonify, here are some prerequisites first:
 
 All set? you're now ready to go.
 
+### Testing cartoonGAN on Google colab
+
+check out `standalone_cartoonify.ipynb`
+
+or online here: (https://colab.research.google.com/drive/1Lq8mACJKP8TBxY-TJcsdyo_qul-OVdYc#scrollTo=ug2o6M2IqyAu)
+
 Please follow these four steps:
 
 # 1. Test CartoonGAN locally

@@ -36,9 +36,9 @@ All set? you're now ready to go.
 
 ### Testing cartoonGAN on Google colab
 
-check out `standalone_cartoonify.ipynb`
+check out `cartoongan/notebooks/standalone_cartoonify.ipynb`
 
-or online here: (https://colab.research.google.com/drive/1Lq8mACJKP8TBxY-TJcsdyo_qul-OVdYc#scrollTo=ug2o6M2IqyAu)
+or online on [Colab](https://colab.research.google.com/drive/1Lq8mACJKP8TBxY-TJcsdyo_qul-OVdYc#scrollTo=ug2o6M2IqyAu)
 
 Please follow these four steps:
 

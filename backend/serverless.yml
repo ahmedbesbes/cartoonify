@@ -17,7 +17,7 @@ provider:
   name: aws
   runtime: python3.7
   profile: cartoonify
-  region: eu-west-3
+  region: ap-east-1
   timeout: 60
   iamRoleStatements:
     - Effect: Allow

@@ -38,7 +38,7 @@ All set? you're now ready to go.
 
 check out `cartoongan/notebooks/standalone_cartoonify.ipynb`
 
-or online on [Colab](https://colab.research.google.com/drive/1Lq8mACJKP8TBxY-TJcsdyo_qul-OVdYc#scrollTo=ug2o6M2IqyAu)
+or online on [Google Colab](https://colab.research.google.com/github/ahmedbesbes/cartoonify/blob/main/cartoongan/notebooks/standalone_cartoonify.ipynb)
 
 Please follow these four steps:
 

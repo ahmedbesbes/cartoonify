@@ -170,7 +170,7 @@ class InstanceNormalization(nn.Module):
         # Calculate the biased var. torch.var returns unbiased var
         var = torch.std(t, 2) ** 2
         var = var.unsqueeze(2).unsqueeze(3).expand_as(x) * (
-            (n - 1) / torch.FloatTensor([n])
+            (n - 1) / torch.FloatTensor([n]).to(var.device)
         )
         scale_broadcast = self.scale.unsqueeze(1).unsqueeze(1).unsqueeze(0)
         scale_broadcast = scale_broadcast.expand_as(x)
